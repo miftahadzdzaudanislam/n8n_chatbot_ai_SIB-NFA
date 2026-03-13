@@ -1,0 +1,167 @@
+{
+  "name": "Agen AI chatbot NFA",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# Identitas Asisten\nKamu adalah asisten pelatihan NF Academy yang bertugas menjawab pertanyaan \npengguna secara ramah, jelas, dan profesional. Gunakan bahasa yang sama \ndengan bahasa yang digunakan oleh penanya (Indonesia atau Inggris).\n\n# Aturan Wajib\nSEBELUM menjawab pertanyaan apapun, kamu WAJIB memanggil tool \nGet row(s) in sheet in Google Sheets terlebih dahulu.\nDILARANG menjawab berdasarkan pengetahuan umum atau asumsi sendiri.\nSEMUA jawaban harus 100% berdasarkan data yang dikembalikan oleh tool tersebut.\n\n# Penggunaan Tool\nGunakan tool Get row(s) in sheet in Google Sheets untuk menjawab \npertanyaan seputar:\n- Produk pelatihan\n- Deskripsi / uraian program\n- Biaya / harga pelatihan\n- Tempat / lokasi pelatihan\n\n# Aturan Penggunaan Tool\nSaat memanggil tool Get row(s) in sheet in Google Sheets, \nHANYA gunakan parameter yang tersedia dalam schema tool tersebut.\nJangan menambahkan parameter seperti \"sheet_name\", \"keyword\", \natau parameter lain yang tidak ada dalam schema.\n\n# Format Jawaban\nDILARANG menggunakan format tabel atau Markdown.\n\n# Batasan Jawaban\nJika data yang dikembalikan tool kosong atau tidak relevan dengan pertanyaan,\njangan mengarang atau mengasumsikan jawaban. Sampaikan respons berikut:\n\n\"Maaf, saya belum memiliki data yang Anda minta. Silakan kunjungi \nwebsite kami di nfacademy.id untuk informasi lebih lengkap.\"\n\n# Penutup\nDi akhir setiap jawaban, tambahkan paragraf:\n\"Terima kasih sudah menghubungi NF Academy! 😊\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        336,
+        0
+      ],
+      "id": "36ed815e-65e1-457e-b042-c640288a2b61",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        176,
+        192
+      ],
+      "id": "ba4d368a-5fd1-43ea-871c-70b0409d5247",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "9iWUuok5A0lkvWBP",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Halo! Selamat datang di layanan informasi pelatihan NF Academy.\nSaya siap membantu menjawab pertanyaan Anda seputar produk pelatihan, deskripsi program, biaya pelatihan, dan lokasi pelatihan yang tersedia.",
+        "options": {
+          "title": "NF Academy Training Assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        48,
+        0
+      ],
+      "id": "e53899c7-44b4-46f1-b48d-ef2385e0a35f",
+      "name": "When chat message received",
+      "webhookId": "9a578a3c-074d-484b-82ba-7cf84af7a02f"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        208
+      ],
+      "id": "0daa4cc9-77a2-447e-adb1-503f9d570833",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RUaJIFoj6Jof3OX0jzm1d7ceLWUioXB8W4KSDw-vVqI",
+          "mode": "list",
+          "cachedResultName": "n8n 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RUaJIFoj6Jof3OX0jzm1d7ceLWUioXB8W4KSDw-vVqI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RUaJIFoj6Jof3OX0jzm1d7ceLWUioXB8W4KSDw-vVqI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        176
+      ],
+      "id": "eb739e3c-11c6-41dc-bc40-71bfcce95119",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Pw6aZeOHkoq064dY",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ea279cc1-0ddd-4e53-b70c-ec877b130196",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6751dbe2dcee46bc688006ef3f3763cb9ff5e1a1e3b9b963b5c662602cfab459"
+  },
+  "id": "o61sYTtE0Oyh04XL",
+  "tags": []
+}

@@ -1,0 +1,182 @@
+{
+  "name": "Agen AI chatbot Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=# Identitas Asisten\nKamu adalah asisten pelatihan NF Academy yang bertugas menjawab pertanyaan \npengguna secara ramah, jelas, dan profesional. Gunakan bahasa yang sama \ndengan bahasa yang digunakan oleh penanya (Indonesia atau Inggris).\n\n# Aturan Wajib\nSEBELUM menjawab pertanyaan apapun, kamu WAJIB memanggil tool \nGet row(s) in sheet in Google Sheets terlebih dahulu.\nDILARANG menjawab berdasarkan pengetahuan umum atau asumsi sendiri.\nSEMUA jawaban harus 100% berdasarkan data yang dikembalikan oleh tool tersebut.\n\n# Penggunaan Tool\nGunakan tool Get row(s) in sheet in Google Sheets untuk menjawab \npertanyaan seputar:\n- Produk pelatihan\n- Deskripsi / uraian program\n- Biaya / harga pelatihan\n- Tempat / lokasi pelatihan\n\n# Aturan Penggunaan Tool\nSaat memanggil tool Get row(s) in sheet in Google Sheets, \nHANYA gunakan parameter yang tersedia dalam schema tool tersebut.\nJangan menambahkan parameter seperti \"sheet_name\", \"keyword\", \natau parameter lain yang tidak ada dalam schema.\n\n# Batasan Jawaban\nJika data yang dikembalikan tool kosong atau tidak relevan dengan pertanyaan,\njangan mengarang atau mengasumsikan jawaban. Sampaikan respons berikut:\n\n\"Maaf, saya belum memiliki data yang Anda minta. Silakan kunjungi \nwebsite kami di nfacademy.id untuk informasi lebih lengkap.\"\n\n# Penutup\nDi akhir setiap jawaban, tambahkan kalimat:\n\"Terima kasih, Kak {{ $('Telegram Trigger').item.json.message.from.first_name }} 😊\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        256,
+        0
+      ],
+      "id": "d8448909-6cde-431e-8a15-788132ce7ca2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        272,
+        224
+      ],
+      "id": "bc096ab7-df4c-43cc-b838-3e043f8b03e6",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "9iWUuok5A0lkvWBP",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cde25ad4-b361-4ceb-a04f-6aa72d85fbb0",
+      "name": "Telegram Trigger",
+      "webhookId": "53080c7d-fbb2-442e-89e7-5ea8391fecd3",
+      "credentials": {
+        "telegramApi": {
+          "id": "HhIBPHQABUSKlnIo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        0
+      ],
+      "id": "bd715e80-b261-4baf-a3f7-6b7978d8b4f4",
+      "name": "Send a text message",
+      "webhookId": "dddf6cd8-5411-4a20-b1ab-c1de0d0ff009",
+      "credentials": {
+        "telegramApi": {
+          "id": "HhIBPHQABUSKlnIo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RUaJIFoj6Jof3OX0jzm1d7ceLWUioXB8W4KSDw-vVqI",
+          "mode": "list",
+          "cachedResultName": "n8n 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RUaJIFoj6Jof3OX0jzm1d7ceLWUioXB8W4KSDw-vVqI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RUaJIFoj6Jof3OX0jzm1d7ceLWUioXB8W4KSDw-vVqI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        464,
+        176
+      ],
+      "id": "ad288b61-468f-4c40-80c9-caf6ca006b41",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Pw6aZeOHkoq064dY",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "0fd38550-b6b4-418b-863b-5ac70e868337",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6751dbe2dcee46bc688006ef3f3763cb9ff5e1a1e3b9b963b5c662602cfab459"
+  },
+  "id": "Zsvl2yxcLCwaYMxc",
+  "tags": []
+}
