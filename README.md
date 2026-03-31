@@ -8,6 +8,18 @@ Repository ini digunakan untuk mengumpulkan tugas pada **Course Pengembangan Age
 Chatbot AI:
 https://mfth-adz.app.n8n.cloud/webhook/ef113ebc-d259-45fc-8e15-26c4a7a98100/chat
 
+### Demo Tugas 2
+Chatbot AI:
+https://mfth-adz.app.n8n.cloud/webhook/9a578a3c-074d-484b-82ba-7cf84af7a02f/chat
+
+### Demo Tugas 3
+Chatbot AI:
+https://n8n-h6uthg9ctnk3.jkt1.sumopod.my.id/webhook/9a578a3c-074d-484b-82ba-7cf84af7a02f/chat
+
+### Demo Tugas 4
+Chatbot AI:
+https://n8n-h6uthg9ctnk3.jkt1.sumopod.my.id/webhook/02a59c83-ebe1-4d17-a8e7-1976c3dbd367/chat
+
 ## Teknologi yang Digunakan
 - n8n
 - AI Agent
